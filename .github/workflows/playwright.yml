@@ -1,0 +1,34 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        ENV: qa
+        ASCENDQE_ADMIN_USERNAME: ${{ secrets.ASCENDQE_ADMIN_USERNAME }}
+        ASCENDQE_ADMIN_PASSWORD: ${{ secrets.ASCENDQE_ADMIN_PASSWORD }}
+        ASCENDQE_USER_USERNAME: ${{ secrets.ASCENDQE_USER_USERNAME }}
+        ASCENDQE_USER_PASSWORD: ${{ secrets.ASCENDQE_USER_PASSWORD }}
+    - uses: actions/upload-artifact@v5
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30

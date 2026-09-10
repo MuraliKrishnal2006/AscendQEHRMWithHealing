@@ -1,0 +1,37 @@
+{
+  "name": "playwright_version2",
+  "version": "1.0.0",
+  "description": "![Playwright Tests](https://github.com/Thomson507/Playwright_Version2/actions/workflows/playwright.yml/badge.svg)",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomson507/Playwright_Version2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Thomson507/Playwright_Version2/issues"
+  },
+  "homepage": "https://github.com/Thomson507/Playwright_Version2#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.1.0",
+    "csv-parse": "^7.0.1",
+    "dotenv": "^17.4.2"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.62.1",
+    "playwright-core": "^1.62.1",
+    "undici-types": "^8.3.0"
+  }
+}

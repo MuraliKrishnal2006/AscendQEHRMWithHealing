@@ -1,0 +1,7 @@
+Leave Type,FromDate,ToDate,Comments,Expected
+Casual Leave,2026-09-22,2026-09-22,Family function,Successfully Saved
+Sick Leave,2026-09-23,2026-09-23,Not Feeling well,Successfully Saved
+Casual Leave,2026-09-24,2026-09-23,Family function,To date should be after from date
+Casual Leave,2026-09-26,2026-09-27,Family function,Failed to Submit: No Working Days Selected
+
+

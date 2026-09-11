@@ -11,8 +11,11 @@ export class Timepage extends BasePage {
     readonly InTime: Locator;
     readonly OutTime: Locator;
     readonly MyRecords: Locator;
+    readonly MyRecordsHeading: Locator;
     readonly EmployeeRecords: Locator;
+    readonly EmployeeAttendanceRecords: Locator;
     readonly EmployeeName: Locator;
+    readonly AllEmployeeName: Locator;
     readonly ViewButton: Locator;
 
     readonly employeeNameAutocomplete: AutocompleteComponent;
@@ -42,8 +45,11 @@ export class Timepage extends BasePage {
         this.OutTime = page.getByRole('button', { name: 'Out' });
 
         this.MyRecords = page.getByRole('menuitem', { name: 'My Records' });
+        this.MyRecordsHeading = page.getByRole('heading', { name: /My Attendance Records|My Records/i }).or(page.getByText('My Attendance Records'));
         this.EmployeeRecords = page.getByRole('menuitem', { name: 'Employee Records' });
+        this.EmployeeAttendanceRecords = page.getByRole('heading', { name: /Employee Attendance Records|Employee Records/i }).or(page.getByText('Employee Attendance Records'));
         this.EmployeeName = page.getByPlaceholder('Type for hints...');
+        this.AllEmployeeName = page.locator('.oxd-table-card').or(page.locator('.oxd-table')).or(page.locator('.orangehrm-container')).first();
         this.ViewButton = page.locator('form').getByRole('button', { name: 'View' });
 
         this.employeeNameAutocomplete = new AutocompleteComponent(
@@ -53,6 +59,138 @@ export class Timepage extends BasePage {
         );
         this.topNav = new TopNavComponent(page);
 
+    }
+
+    // ================= Candidate Locator Pools =================
+
+    get attendanceCandidates(): Array<() => Locator> {
+        return [
+            () => this.Attendance,
+            () => this.page.getByText('Attendance', { exact: true }),
+            () => this.page.getByText('Attendance'),
+            () => this.page.locator('span:has-text("Attendance")'),
+            () => this.page.locator(':text-is("Attendance")'),
+            () => this.page.locator(':text("Attendance")'),
+            () => this.page.locator('span').filter({ hasText: 'Attendance' })
+        ];
+    }
+
+    get punchInOutCandidates(): Array<() => Locator> {
+        return [
+            () => this.PunchInOut,
+            () => this.page.getByText('Punch In/Out', { exact: true }),
+            () => this.page.getByText('Punch In/Out'),
+            () => this.page.locator('a:has-text("Punch In/Out")'),
+            () => this.page.locator(':text-is("Punch In/Out")'),
+            () => this.page.locator(':text("Punch In/Out")'),
+            () => this.page.locator('a').filter({ hasText: 'Punch In/Out' }),
+            () => this.page.locator('a').filter({ hasText: 'Punch In/Out' }).first()
+        ];
+    }
+
+    get inTimeCandidates(): Array<() => Locator> {
+        return [
+            () => this.InTime,
+            () => this.page.getByText('In', { exact: true }),
+            () => this.page.locator('button:has-text("In")'),
+            () => this.page.locator(':text-is("In")'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space:visible'),
+            () => this.page.locator('button').filter({ hasText: 'In' })
+        ];
+    }
+
+    get outTimeCandidates(): Array<() => Locator> {
+        return [
+            () => this.OutTime,
+            () => this.page.getByText('Out', { exact: true }),
+            () => this.page.locator('button:has-text("Out")'),
+            () => this.page.locator(':text-is("Out")'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space:visible'),
+            () => this.page.locator('button').filter({ hasText: 'Out' })
+        ];
+    }
+
+    get myRecordsCandidates(): Array<() => Locator> {
+        return [
+            () => this.MyRecords,
+            () => this.page.getByText('My Records', { exact: true }),
+            () => this.page.getByText('My Records'),
+            () => this.page.locator('a:has-text("My Records")'),
+            () => this.page.locator(':text-is("My Records")'),
+            () => this.page.locator(':text("My Records")'),
+            () => this.page.locator('a').filter({ hasText: 'My Records' }),
+            () => this.page.locator('a').filter({ hasText: 'My Records' }).first()
+        ];
+    }
+
+    get myRecordsHeadingCandidates(): Array<() => Locator> {
+        return [
+            () => this.MyRecordsHeading,
+            () => this.page.getByRole('heading', { name: 'My Attendance Records' }),
+            () => this.page.getByRole('heading', { name: /My Attendance Records/i }),
+            () => this.page.getByText('My Attendance Records', { exact: true }),
+            () => this.page.getByText('My Attendance Records'),
+            () => this.page.locator('h5:has-text("My Attendance Records")'),
+            () => this.page.locator('h6:has-text("Attendance")')
+        ];
+    }
+
+    get employeeRecordsCandidates(): Array<() => Locator> {
+        return [
+            () => this.EmployeeRecords,
+            () => this.page.getByText('Employee Records', { exact: true }),
+            () => this.page.getByText('Employee Records'),
+            () => this.page.locator('a:has-text("Employee Records")'),
+            () => this.page.locator(':text-is("Employee Records")'),
+            () => this.page.locator(':text("Employee Records")'),
+            () => this.page.locator('a').filter({ hasText: 'Employee Records' }),
+            () => this.page.locator('a').filter({ hasText: 'Employee Records' }).first()
+        ];
+    }
+
+    get employeeAttendanceRecordsCandidates(): Array<() => Locator> {
+        return [
+            () => this.EmployeeAttendanceRecords,
+            () => this.page.getByRole('heading', { name: 'Employee Attendance Records' }),
+            () => this.page.getByRole('heading', { name: /Employee Attendance Records/i }),
+            () => this.page.getByText('Employee Attendance Records', { exact: true }),
+            () => this.page.getByText('Employee Attendance Records'),
+            () => this.page.locator('h5:has-text("Employee Attendance Records")')
+        ];
+    }
+
+    get allEmployeeNameCandidates(): Array<() => Locator> {
+        return [
+            () => this.AllEmployeeName,
+            () => this.page.locator('.oxd-table-card').first(),
+            () => this.page.locator('.oxd-table'),
+            () => this.page.locator('.oxd-table-body'),
+            () => this.page.locator('.orangehrm-container')
+        ];
+    }
+
+    get employeeNameCandidates(): Array<() => Locator> {
+        return [
+            () => this.EmployeeName,
+            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.getByPlaceholder('Type for hints...'),
+            () => this.page.getByPlaceholder('Type for hints...', { exact: true }),
+            () => this.page.locator("//input[@placeholder='Type for hints...']"),
+            () => this.page.locator("input[placeholder='Type for hints...']")
+        ];
+    }
+
+    get viewButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.ViewButton,
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary:visible'),
+            () => this.page.locator('button').filter({ hasText: 'View' }).first(),
+            () => this.page.locator('button').filter({ hasText: 'View' }).last(),
+            () => this.page.locator("//button[@type='submit']"),
+            () => this.page.locator("button[type='submit']")
+        ];
     }
 
     async clickTimeMenu(): Promise<void> {

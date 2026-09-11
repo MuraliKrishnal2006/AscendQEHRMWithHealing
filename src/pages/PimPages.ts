@@ -45,6 +45,69 @@ export class PimPages extends BasePage{
         this.employeeStatusDropdownComponent = new SelectDropdownComponent(page, this.employeeStatus);
         this.topNav = new TopNavComponent(page);
     }
+     // ================= Candidate Locator Pools =================
+
+    get employeeNameCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeName,
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"),
+            () => this.page.getByRole('textbox', { name: 'Type for hints...' }),
+            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.getByRole('textbox'),
+            () => this.page.getByPlaceholder('Type for hints...'),
+            () => this.page.getByPlaceholder('Type for hints...', { exact: true })
+        ];
+    }
+
+    get employeeIdCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeId,
+            () => this.page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']"),
+            () => this.page.getByRole('textbox'),
+            () => this.page.locator('input.oxd-input.oxd-input--active'),
+            () => this.page.locator('input.oxd-input.oxd-input--active:visible')
+        ];
+    }
+
+    get employeeStatusCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeStatus,
+            () => this.page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/i[1]"),
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > i:nth-child(1)"),
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow'),
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow:visible'),
+            () => this.page.locator('div.oxd-select-text-input'),
+            () => this.page.locator('div.oxd-select-text-input:visible'),
+            () => this.page.locator('.oxd-select-text-input'),
+            () => this.page.locator('div:has-text("-- Select --")'),
+            () => this.page.locator('div').filter({ hasText: '-- Select --' }),
+            () => this.page.locator(':has-text("-- Select --")')
+        ];
+    }
+
+    get searchButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.searchButton,
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space:visible'),
+            () => this.page.locator('button').filter({ hasText: 'Search' }),
+            () => this.page.locator('button').filter({ hasText: 'Search' }).first(),
+            () => this.page.locator('button').filter({ hasText: 'Search' }).last(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Search']")
+        ];
+    }
+
+    get jobTitleDropdownCandidates(): Array<() => Locator> {
+        return [
+            () => this.jobTitleDropdown,
+            () => this.page.locator('div.oxd-select-text-input'),
+            () => this.page.locator('div.oxd-select-text-input:visible'),
+            () => this.page.locator('.oxd-select-text-input'),
+            () => this.page.locator('div:has-text("-- Select --")'),
+            () => this.page.locator('div').filter({ hasText: '-- Select --' }),
+            () => this.page.locator(':has-text("-- Select --")')
+        ];
+    }
      //Opens the PIM module from the sidebar.
     async clickPimMenu() : Promise<void> {
         await this.topNav.goTo('PIM', false);

@@ -20,7 +20,6 @@ test.describe('TC12 - PIM Module: Pagination, Sorting & Search Filter', () => {
 
         await adminMenu.clickPim();
         await expect(page).toHaveURL(/pim/);
-        await page.waitForLoadState('networkidle').catch(() => {});
 
         await tc12Page.scrollToBottom();
         await tc12Page.verifyPaginationIsVisible();

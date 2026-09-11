@@ -22,7 +22,7 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.UsernameInput = page.getByPlaceholder('Usernames');
+        this.UsernameInput = page.getByPlaceholder('divya');
         this.PasswordInput = page.getByPlaceholder('Passwords');
         this.LoginButton = page.getByRole('button', { name: 'Logins' });
         this.ErrorMessage = page.locator('//div[@class="orangehrm-login-error"]/div/div/p');

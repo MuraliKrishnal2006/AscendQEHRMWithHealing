@@ -33,7 +33,7 @@ test.describe('TC01 - Add Employee, Create ESS User, and Verify Permissions', ()
 
       await loginPage.gotoLogin();
       await expect(page).toHaveURL(/.*auth\/login/);
-      await expect(loginPage.UsernameInput).toBeVisible();
+      await loginPage.verifyUsernameVisible();
 
       await loginPage.login(
         validUser.username,
@@ -89,7 +89,7 @@ test.describe('TC01 - Add Employee, Create ESS User, and Verify Permissions', ()
 
       await dashboardPage.logout();
       await expect(page).toHaveURL(/.*auth\/login/);
-      await expect(loginPage.UsernameInput).toBeVisible();
+      await loginPage.verifyUsernameVisible();
       console.log('Admin logged out successfully');
 
       await loginPage.login(
@@ -104,13 +104,13 @@ test.describe('TC01 - Add Employee, Create ESS User, and Verify Permissions', ()
       console.log('Inspected Left Navigation Panel: Admin is restricted for ESS user');
 
       await leavePage.clickLeave();
-      await expect(page).toHaveURL(/.*leave\/viewLeaveList/);
+      await expect(page).toHaveURL(/.*leave\/viewMyLeaveList/);
       await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible();
       console.log('Navigated to Leave module as ESS user');
 
       await dashboardPage.logout();
       await expect(page).toHaveURL(/.*auth\/login/);
-      await expect(loginPage.UsernameInput).toBeVisible();
+      await loginPage.verifyUsernameVisible();
       console.log(`ESS user ${emp.username} logged out successfully`);
 
       console.log('Clicking browser Back button...');
@@ -118,7 +118,7 @@ test.describe('TC01 - Add Employee, Create ESS User, and Verify Permissions', ()
 
       await page.goBack();
       await expect(page).toHaveURL(/.*auth\/login/);
-      await expect(loginPage.UsernameInput).toBeVisible();
+      await loginPage.verifyUsernameVisible();
 
       console.log('URL after Back:', page.url());
       console.log('Verified: Session is closed and user is prevented from accessing protected pages.');

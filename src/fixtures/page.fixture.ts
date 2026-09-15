@@ -12,7 +12,7 @@ import { PimPage } from '../pages/PimPage';
 import {EmployeeDetailsPage} from '../pages/TC-03-PIMemployee';
 import {AdminPage} from '../pages/TC-07-AdminUserManagement';
 import { PimPages } from '../pages/PimPages';
-import { TC12Page } from '../pages/TC12 1';
+import { Tc12_UItablesPage } from '../pages/Tc12_UItablesPage';
 import { AdminMenuComponent } from '../components/adminmenu';
 import { CommonMenuComponent } from '../components/commonmenuitems';
 
@@ -41,7 +41,8 @@ import { CommonMenuComponent } from '../components/commonmenuitems';
     employeeDetailsPage : EmployeeDetailsPage;
     adminPage : AdminPage;
     pimPages: PimPages;
-    tc12Page:TC12Page;
+    tc12_UItablesPage: Tc12_UItablesPage;
+    tc12Page: Tc12_UItablesPage;
     adminMenu: AdminMenuComponent;
     commonMenu: CommonMenuComponent;
 };
@@ -88,8 +89,11 @@ import { CommonMenuComponent } from '../components/commonmenuitems';
     pimPages : async ({page},use)=>{
         await use(new PimPages(page));
     },
+    tc12_UItablesPage : async ({ page }, use)=>{
+        await use(new Tc12_UItablesPage(page));
+    },
     tc12Page : async ({ page }, use)=>{
-        await use(new TC12Page(page));
+        await use(new Tc12_UItablesPage(page));
     },
     adminMenu : async ({page},use)=>{
         await use(new AdminMenuComponent(page));

@@ -80,7 +80,7 @@ test.describe('Multiple Leaves - Single Login', () => {
     // Logout after all leaves are applied
     await dashboardPage.logout();
 
-    await expect(loginPage.UsernameInput).toBeVisible();
+    await loginPage.verifyUsernameVisible();
 
     // Login again as Admin
     await loginPage.gotoLogin();
@@ -142,13 +142,13 @@ test.describe('Multiple Leaves - Single Login', () => {
     // Logout after search
     await dashboardPage.logout();
 
-    await expect(loginPage.UsernameInput).toBeVisible();
+    await loginPage.verifyUsernameVisible();
 
     // Login again as specific user
 
     await loginPage.gotoLogin();
     // Verify Login page is displayed
-    await expect(loginPage.UsernameInput).toBeVisible();
+    await loginPage.verifyUsernameVisible();
 
     // Login as specific user
     //await loginPage.gotoLogin();

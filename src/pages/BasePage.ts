@@ -35,6 +35,11 @@ export class BasePage {
         await locator.click();
     }
 
+    async clear(locator: Locator): Promise<void> {
+        await this.waitForElement(locator);
+        await locator.clear();
+    }
+
     async getText(locator: Locator): Promise<string> {
         await this.waitForElement(locator);
         return (await locator.textContent())?.trim() ?? '';
@@ -56,5 +61,32 @@ export class BasePage {
 
         await locator.waitFor({ state: 'visible' });
         await locator.fill(value);
+    }
+
+    async healClear(candidates: Array<() => Locator>): Promise<void> {
+        const locator = await healLocator(candidates);
+
+        await locator.waitFor({ state: 'visible' });
+        await locator.clear();
+    }
+
+    async healGetText(candidates: Array<() => Locator>): Promise<string> {
+        const locator = await healLocator(candidates);
+
+        await locator.waitFor({ state: 'visible' });
+        return (await locator.textContent())?.trim() ?? '';
+    }
+
+    async healExpectVisible(locators: (() => Locator)[]): Promise<void> {
+        for (const getLocator of locators) {
+            try {
+                await expect(getLocator()).toBeVisible({ timeout: 2000 });
+                return;
+            } catch {
+                console.log('Locator failed. Trying next locator...');
+            }
+        }
+
+        throw new Error('All locators failed');
     }
 }

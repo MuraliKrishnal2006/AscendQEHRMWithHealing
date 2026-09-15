@@ -33,7 +33,7 @@ export class PimPages extends BasePage{
         // .first() because the placeholder text is reused elsewhere on
         // the page (e.g. supervisor search) — this targets the employee
         // name field specifically, confirmed via codegen.
-        this.employeeName = page.getByPlaceholder('Type for hints...').first();
+        this.employeeName = page.getByPlaceholder('Enter').first();
         this.employeeNameDropdown = page.locator('//div[@class="oxd-autocomplete-dropdown --positon-bottom"]/div');
         this.employeeId = page.locator('//div[@class="oxd-grid-item oxd-grid-item--gutters"]/div/div/input');
         this.employeeStatus = page.locator('//div[@class="oxd-select-wrapper"]/div/div/i').nth(0);
@@ -50,9 +50,9 @@ export class PimPages extends BasePage{
     get employeeNameCandidates(): Array<() => Locator> {
         return [
             () => this.employeeName,
-            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"),
-            () => this.page.getByRole('textbox', { name: 'Type for hints...' }),
-            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.locator("body > div:nth-parent(3) > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"),
+            () => this.page.getByRole('textbox', { name: 'Enter' }),
+            () => this.page.getByRole('textbox', { name: /Enter\.\.\./i }),
             () => this.page.getByRole('textbox'),
             () => this.page.getByPlaceholder('Type for hints...'),
             () => this.page.getByPlaceholder('Type for hints...', { exact: true })

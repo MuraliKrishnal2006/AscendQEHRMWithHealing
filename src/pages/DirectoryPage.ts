@@ -22,7 +22,7 @@ export class DirectoryPage extends BasePage {
         this.employeeNameInput = page.getByPlaceholder('Type for hints...').first();
         this.searchButton = page.getByRole('button', { name: 'Search' });
         this.resetButton = page.getByRole('button', { name: 'Reset' });
-        this.directoryCards = page.locator('.oxd-grid-item, .orangehrm-directory-card');
+        this.directoryCards = page.locator('.orangehrm-container .oxd-grid-item, .orangehrm-directory-card, .orangehrm-corporate-directory-card');
 
         this.employeeNameAutocomplete = new AutocompleteComponent(
             page,

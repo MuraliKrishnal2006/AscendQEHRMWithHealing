@@ -1,5 +1,6 @@
 import { test, expect } from '../../src/fixtures/page.fixture';
 import { validUser } from '../../src/data/credentials';
+import { pimDirectoryData } from '../../src/data/TC-06PIMDirectory';
 
 test.describe('TC06 - PIM Search Filters and Directory Verification', () => {
 
@@ -14,7 +15,7 @@ test.describe('TC06 - PIM Search Filters and Directory Verification', () => {
 
     await loginPage.gotoLogin();
     await expect(page).toHaveURL(/.*auth\/login/);
-    await expect(loginPage.UsernameInput).toBeVisible();
+    await loginPage.verifyUsernameVisible();
 
     await loginPage.login(
       validUser.username,
@@ -29,25 +30,25 @@ test.describe('TC06 - PIM Search Filters and Directory Verification', () => {
     await expect(page.getByRole('heading', { name: 'PIM', exact: true })).toBeVisible();
     console.log('Navigated to PIM module');
 
-    console.log('Searching by Employee Name: verma');
-    await pimPage.searchByEmployeeName('verma');
+    console.log(`Searching by Employee Name: ${pimDirectoryData.employeeSearchName}`);
+    await pimPage.searchByEmployeeName(pimDirectoryData.employeeSearchName);
     await expect(pimPage.tableRows.first()).toBeVisible();
-    await expect(pimPage.tableRows.first()).toContainText(/verma/i);
+    await expect(pimPage.tableRows.first()).toContainText(new RegExp(pimDirectoryData.employeeSearchName, 'i'));
 
     await pimPage.clearEmployeeName();
     await expect(pimPage.employeeName).toHaveValue('');
     console.log('Cleared Employee Name filter');
 
-    console.log('Searching by Employee ID: EMP9002');
-    await pimPage.searchByEmployeeId('EMP9002');
+    console.log(`Searching by Employee ID: ${pimDirectoryData.employeeId}`);
+    await pimPage.searchByEmployeeId(pimDirectoryData.employeeId);
     await expect(pimPage.tableRows.first()).toBeVisible();
-    await expect(pimPage.tableRows.first()).toContainText('EMP9002');
+    await expect(pimPage.tableRows.first()).toContainText(pimDirectoryData.employeeId);
 
-    console.log('Clearing filters and searching by Employment Status: Full-Time Permanent');
+    console.log(`Clearing filters and searching by Employment Status: ${pimDirectoryData.employmentStatus}`);
     await pimPage.resetSearch();
-    await pimPage.searchByEmploymentStatus('Full-Time Permanent');
+    await pimPage.searchByEmploymentStatus(pimDirectoryData.employmentStatus);
     await expect(pimPage.tableRows.first()).toBeVisible();
-    await expect(pimPage.tableRows.first()).toContainText('Full-Time Permanent');
+    await expect(pimPage.tableRows.first()).toContainText(pimDirectoryData.employmentStatus);
 
     console.log('Clicking matching result row...');
     await pimPage.clickFirstResultRow();
@@ -61,12 +62,12 @@ test.describe('TC06 - PIM Search Filters and Directory Verification', () => {
 
     await directoryPage.clickDirectory();
     await expect(page).toHaveURL(/.*directory\/viewDirectory/);
-    await expect(page.getByRole('heading', { name: 'Directory', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Directory', exact: true }).first()).toBeVisible();
 
-    console.log('Searching Directory by name: verma');
-    await directoryPage.searchByNameOrText('verma');
+    console.log(`Searching Directory by name: ${pimDirectoryData.directorySearchName}`);
+    await directoryPage.searchByNameOrText(pimDirectoryData.directorySearchName);
     await expect(directoryPage.directoryCards.first()).toBeVisible();
-    await expect(directoryPage.directoryCards.first()).toContainText(/verma/i);
+    await expect(directoryPage.directoryCards.first()).toContainText(new RegExp(pimDirectoryData.directorySearchName, 'i'));
 
     console.log('Clearing Directory filters...');
     await directoryPage.resetFilters();

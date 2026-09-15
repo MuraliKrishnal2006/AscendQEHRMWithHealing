@@ -26,8 +26,7 @@ export class LeavePage extends BasePage {
         super(page);
         this.Leave = page.getByRole('link', { name: 'Leave', exact: true });
         this.Apply = page.getByRole('link', { name: 'Apply', exact: true });
-        this.LeaveType = page.getByText('-- Select --', { exact: true });
-        this.FromDate = page.locator('input[placeholder="yyyy-mm-dd"]').first();
+        this.LeaveType = page.locator('.oxd-input-group').filter({ hasText: 'Leave Type' }).locator('.oxd-select-text').first(); this.FromDate = page.locator('input[placeholder="yyyy-mm-dd"]').first();
         this.ToDate = page.locator('input[placeholder="yyyy-mm-dd"]').nth(1);
         this.Comments = page.locator('textarea').first();
         // Final Apply button
@@ -39,7 +38,7 @@ export class LeavePage extends BasePage {
         this.dateValidationMessage = page.getByText('To date should be after from date', { exact: true });
         // LeaveType's original selector was unscoped (page.getByText), so
         // no optionsContainer is passed here — matches original behaviour.
-        this.leaveTypeDropdown = new SelectDropdownComponent(page, this.LeaveType);
+        this.leaveTypeDropdown = new SelectDropdownComponent(page, this.LeaveType, page.locator('.oxd-select-dropdown'));
         this.topNav = new TopNavComponent(page);//Store those components so the Page Object can use them later.
     }
 
@@ -76,7 +75,7 @@ export class LeavePage extends BasePage {
         toDate: string,
         comment: string
     ): Promise<void> {
-      // Enter From Date
+        // Enter From Date
         await this.waitForElement(this.FromDate);
         await this.fill(this.FromDate, fromDate);
         await this.page.waitForTimeout(2000);

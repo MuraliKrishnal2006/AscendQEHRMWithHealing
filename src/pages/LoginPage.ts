@@ -1,11 +1,11 @@
-import {Page ,Locator} from '@playwright/test';
-import {BasePage} from './BasePage';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { test as base } from '@playwright/test';
 //import {LoginPage} from '../pages/LoginPage';
-import {DashboardPage} from '../pages/DashboardPage';
-import {PimPage} from '../pages/PimPage';
-import {AddEmployee} from './AddEmployee';
- 
+import { DashboardPage } from '../pages/DashboardPage';
+import { PimPage } from '../pages/PimPage';
+import { AddEmployee } from './AddEmployee';
+
 /**
  * LoginPage — models OrangeHRM's login screen.
  * Covers both the happy path (valid login) and the negative path
@@ -21,15 +21,24 @@ export class LoginPage extends BasePage {
 
     constructor(page: Page) {
         super(page);
+         // ✅ Using .or() gives you fallbacks during `expect().toBeVisible()` assertions as well!
 
-        this.UsernameInput = page.getByPlaceholder('Usernames');
-        this.PasswordInput = page.getByPlaceholder('Passwords');
-        this.LoginButton = page.getByRole('button', { name: 'Logins' });
+        this.UsernameInput = page.getByPlaceholder('divya');
+        this.PasswordInput = page.getByPlaceholder('pwd');
+        this.LoginButton = page.getByRole('button', { name: 'Login' });
         this.ErrorMessage = page.locator('//div[@class="orangehrm-login-error"]/div/div/p');
     }
 
     async gotoLogin(): Promise<void> {
         await this.goto('/web/index.php/auth/login');
+    }
+
+    async verifyUsernameVisible(): Promise<void> {
+        await this.healExpectVisible([
+            () => this.UsernameInput,
+            () => this.page.locator('input[placeholder="Username"]'),
+            () => this.page.locator('input[type="text"][placeholder="Username"]')
+        ]);
     }
 
     async fillUsername(username: string): Promise<void> {

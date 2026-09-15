@@ -53,7 +53,104 @@ export class LeaveListPage extends BasePage {
             )
         );
     }
+             // ================= Candidate Locator Pools =================
 
+    get fromDateCandidates(): Array<() => Locator> {
+        return [
+            () => this.FromDate,
+            () => this.page.getByRole('textbox', { name: /yyyy-mm-dd/i }),
+            () => this.page.getByRole('textbox'),
+            () => this.page.getByPlaceholder('yyyy-mm-dd'),
+            () => this.page.getByPlaceholder('yyyy-mm-dd', { exact: true }),
+            () => this.page.locator('input.oxd-input.oxd-input--active'),
+            () => this.page.locator('input.oxd-input.oxd-input--active:visible')
+        ];
+    }
+
+    get toDateCandidates(): Array<() => Locator> {
+        return [
+            () => this.ToDate,
+            () => this.page.getByRole('textbox', { name: /yyyy-mm-dd/i }),
+            () => this.page.getByRole('textbox'),
+            () => this.page.getByPlaceholder('yyyy-mm-dd'),
+            () => this.page.getByPlaceholder('yyyy-mm-dd', { exact: true }),
+            () => this.page.locator('input.oxd-input.oxd-input--active'),
+            () => this.page.locator('input.oxd-input.oxd-input--active:visible')
+        ];
+    }
+
+    get employeeNameCandidates(): Array<() => Locator> {
+        return [
+            () => this.EmployeeName,
+            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.getByPlaceholder('Type for hints...'),
+            () => this.page.getByPlaceholder('Type for hints...', { exact: true }),
+            () => this.page.locator("//input[@placeholder='Type for hints...']"),
+            () => this.page.locator("input[placeholder='Type for hints...']"),
+            () => this.page.getByRole('textbox')
+        ];
+    }
+
+    get searchButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.SearchButton,
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Search']"),
+            () => this.page.locator("button[type='submit']"),
+            () => this.page.getByRole('button'),
+            () => this.page.locator(':has-text("Search")'),
+            () => this.page.locator('button:visible')
+        ];
+    }
+
+    get resetButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.ResetButton,
+            () => this.page.locator('button').filter({ hasText: 'Reset' }).last(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(0),
+            () => this.page.locator("//button[normalize-space()='Reset']"),
+            () => this.page.locator("button[type='reset']"),
+            () => this.page.getByRole('button'),
+            () => this.page.locator(':has-text("Reset")'),
+            () => this.page.locator('button:visible')
+        ];
+    }
+
+    get approveLeaveCandidates(): Array<() => Locator> {
+        return [
+            () => this.ApproveLeave,
+            () => this.page.locator('button').filter({ hasText: 'Approve' }).first(),
+            () => this.page.locator('button').filter({ hasText: 'Approve' }).last(),
+            () => this.page.locator('div.oxd-table-cell-actions').locator('button').nth(0),
+            () => this.page.locator("//body/div[@id='app']/div[@class='oxd-layout']/div[@class='oxd-layout-container']/div[@class='oxd-layout-context']/div[@class='orangehrm-background-container']/div[@class='orangehrm-paper-container']/div[@class='orangehrm-container']/div[@role='table']/div[@role='rowgroup']/div[7]/div[1]/div[9]/div[1]/button[1]"),
+            () => this.page.getByRole('button', { name: 'Approve' }),
+            () => this.page.locator('button:has-text("Approve")')
+        ];
+    }
+
+    get rejectLeaveCandidates(): Array<() => Locator> {
+        return [
+            () => this.RejectLeave,
+            () => this.page.locator('button').filter({ hasText: 'Reject' }).first(),
+            () => this.page.locator('button').filter({ hasText: 'Reject' }).last(),
+            () => this.page.locator('div.oxd-table-cell-actions').locator('button').nth(1),
+            () => this.page.locator("//body/div[@id='app']/div[@class='oxd-layout']/div[@class='oxd-layout-container']/div[@class='oxd-layout-context']/div[@class='orangehrm-background-container']/div[@class='orangehrm-paper-container']/div[@class='orangehrm-container']/div[@role='table']/div[@role='rowgroup']/div[7]/div[1]/div[9]/div[1]/button[1]"),
+            () => this.page.getByRole('button', { name: 'Reject' }),
+            () => this.page.locator('button:has-text("Reject")')
+        ];
+    }
+
+    get cancelButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.CancelButton,
+            () => this.page.getByRole('button', { name: /Cancel/i }),
+            () => this.page.getByText('Cancel', { exact: true }),
+            () => this.page.locator('button:has-text("Cancel")'),
+            () => this.page.locator(':text-is("Cancel")'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--label-warn.oxd-table-cell-action-space'),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--label-warn.oxd-table-cell-action-space:visible')
+        ];
+    }
     async searchLeave(
         fromDate: string,
         toDate: string,

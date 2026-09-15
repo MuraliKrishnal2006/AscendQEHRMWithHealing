@@ -1,77 +1,302 @@
-import {Page,Locator} from '@playwright/test';
-import {BasePage} from './BasePage';
-import {AutocompleteComponent} from '../components/AutocompleteComponent';
-import {SelectDropdownComponent} from '../components/SelectDropdownComponent';
-import {AdminMenuComponent} from '../components/adminmenu';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
+import { AutocompleteComponent } from '../components/AutocompleteComponent';
+import { SelectDropdownComponent } from '../components/SelectDropdownComponent';
+import { AdminMenuComponent } from '../components/adminmenu';
+import { healLocator } from '../utils/Locator-healing-utility';
 
- 
 /**
  * PimPage — models the PIM module's employee search screen
  * (/pim/viewEmployeeList). Handles the multi-step search flow:
  * typing a partial name, picking the right match from an autocomplete
  * dropdown, filling employee ID, and selecting employment status
  * from a second dropdown — all before submitting the search.
+ * 
+ * Implements auto-healing candidate locators for sidebar links,
+ * inputs, dropdowns, buttons, and result tables.
  */
+export class PimPage extends BasePage {
+    readonly employeeName: Locator;
+    readonly employeeNameDropdown: Locator;
+    readonly employeeId: Locator;
+    readonly employeeStatus: Locator;
+    readonly employeeStatusDropdown: Locator;
+    readonly searchButton: Locator;
+    readonly resetButton: Locator;
+    readonly employeeListTab: Locator;
+    readonly tableRows: Locator;
+    readonly pimMenu: Locator;
+    readonly adminMenuLink: Locator;
 
-export class PimPage extends BasePage{
-    readonly employeeName : Locator;
-    readonly employeeNameDropdown : Locator;
-    readonly employeeId : Locator;
-    readonly employeeStatus : Locator;
-    readonly employeeStatusDropdown : Locator;
-    readonly searchButton : Locator;
-    readonly resetButton : Locator;
-    readonly employeeListTab : Locator;
-    readonly tableRows : Locator;
+    readonly employeeNameAutocomplete: AutocompleteComponent;
+    readonly employeeStatusDropdownComponent: SelectDropdownComponent;
+    readonly employmentStatusDropdown: SelectDropdownComponent;
+    readonly adminMenu: AdminMenuComponent;
 
-    readonly employeeNameAutocomplete : AutocompleteComponent;
-    readonly employeeStatusDropdownComponent : SelectDropdownComponent;
-    readonly employmentStatusDropdown : SelectDropdownComponent;
-    readonly adminMenu : AdminMenuComponent;
-
-    constructor(page : Page){
+    constructor(page: Page) {
         super(page);
-        // .first() because the placeholder text is reused elsewhere on
-        // the page (e.g. supervisor search) — this targets the employee
-        // name field specifically, confirmed via codegen.
-        this.employeeName = page.getByPlaceholder('Type for hints...').first();
+
+        // Sidebar Navigation Links
+        this.pimMenu = page.getByRole('link', { name: 'PIM', exact: true })
+            .or(page.getByRole('link', { name: 'PIM' }))
+            .or(page.getByRole('link', { name: /PIM/i }))
+            .or(page.getByText('PIM', { exact: true }))
+            .or(page.getByText('PIM'))
+            .or(page.locator('a:has-text("PIM")'))
+            .or(page.locator(':text-is("PIM")'))
+            .or(page.locator(':text("PIM")'))
+            .or(page.locator("a[href*='viewPimModule']"))
+            .or(page.locator('.oxd-main-menu-item').filter({ hasText: 'PIM' }))
+            .or(page.locator('a.oxd-main-menu-item').filter({ hasText: 'PIM' }))
+            .or(page.locator('a').filter({ hasText: 'PIM' }).first())
+            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)"))
+            .first();
+
+        this.adminMenuLink = page.getByRole('link', { name: 'Admin', exact: true })
+            .or(page.getByRole('link', { name: /Admin/i }))
+            .or(page.locator('a:has-text("Admin")'))
+            .or(page.locator("a[href*='viewAdminModule']"))
+            .or(page.locator('.oxd-main-menu-item').filter({ hasText: 'Admin' }))
+            .first();
+
+        // Search Form Inputs with resilient .or() chains
+        this.employeeName = page.getByPlaceholder('Type for hints...').first()
+            .or(page.getByRole('textbox', { name: 'Type for hints...' }))
+            .or(page.getByRole('textbox', { name: /Type for hints\.\.\./i }))
+            .or(page.locator('.oxd-input-group').filter({ hasText: 'Employee Name' }).locator('input').first())
+            .or(page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input[1]"))
+            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"))
+            .first();
+
         this.employeeNameDropdown = page.locator('.oxd-autocomplete-dropdown .oxd-autocomplete-option, .oxd-autocomplete-option, [role="option"]');
-        this.employeeId = page.locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first();
-        this.employeeStatus = page.locator('.oxd-input-group').filter({ hasText: 'Employment Status' }).locator('.oxd-select-text').first();
+
+        this.employeeId = page.locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first()
+            .or(page.locator("//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']").first())
+            .or(page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']").first())
+            .or(page.locator('//div[@class="oxd-grid-item oxd-grid-item--gutters"]/div/div/input').first())
+            .or(page.locator('.oxd-input-group:has-text("Employee Id") input').first())
+            .or(page.locator('input.oxd-input.oxd-input--active').first())
+            .or(page.locator('input.oxd-input.oxd-input--active:visible').first())
+            .first();
+
+        this.employeeStatus = page.locator('.oxd-input-group').filter({ hasText: 'Employment Status' }).locator('.oxd-select-text').first()
+            .or(page.locator('.oxd-input-group:has-text("Employment Status") .oxd-select-text-input').first())
+            .or(page.locator('.oxd-input-group:has-text("Employment Status") i.oxd-select-text--arrow').first())
+            .or(page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').first())
+            .or(page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow:visible').first())
+            .or(page.locator('//div[@class="oxd-select-wrapper"]/div/div/i').first())
+            .or(page.locator("//div[3]//div[1]//div[2]//div[1]//div[1]//div[2]//i[1]").first())
+            .or(page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/i[1]").first())
+            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > i:nth-child(1)").first())
+            .first();
+
         this.employeeStatusDropdown = page.locator('.oxd-select-dropdown .oxd-select-option, .oxd-select-option, [role="option"]');
-        this.searchButton = page.getByRole('button', { name: 'Search' });
-        this.resetButton = page.getByRole('button', { name: 'Reset' });
+
+        this.searchButton = page.getByRole('button', { name: 'Search' })
+            .or(page.getByRole('button', { name: /Search/i }))
+            .or(page.getByText('Search', { exact: true }))
+            .or(page.locator('button:has-text("Search")'))
+            .or(page.locator('button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space'))
+            .or(page.locator("//button[normalize-space()='Search']"))
+            .first();
+
+        this.resetButton = page.getByRole('button', { name: 'Reset' })
+            .or(page.getByRole('button', { name: /Reset/i }))
+            .or(page.getByText('Reset', { exact: true }))
+            .or(page.locator('button:has-text("Reset")'))
+            .or(page.locator(':text-is("Reset")'))
+            .first();
+
         this.employeeListTab = page.getByRole('link', { name: 'Employee List' });
-        this.tableRows = page.locator('.oxd-table-card');
+
+        this.tableRows = page.locator('.oxd-table-card')
+            .or(page.locator('.oxd-table-body .oxd-table-row'))
+            .or(page.locator("div[class='oxd-table-row oxd-table-row--with-border']"))
+            .or(page.locator('div.oxd-table-row.oxd-table-row--with-border'));
 
         this.employeeNameAutocomplete = new AutocompleteComponent(page, this.employeeName, this.employeeNameDropdown);
         this.employeeStatusDropdownComponent = new SelectDropdownComponent(page, this.employeeStatus);
         this.employmentStatusDropdown = new SelectDropdownComponent(page, this.employeeStatus, page.locator('.oxd-select-dropdown'));
         this.adminMenu = new AdminMenuComponent(page);
     }
-     //Opens the PIM module from the sidebar.
-    async clickPimMenu() : Promise<void> {
-        await this.adminMenu.clickPim();
+
+    // ==========================================
+    // Auto-Healing Candidate Getters
+    // ==========================================
+
+    get pimMenuCandidates(): Array<() => Locator> {
+        return [
+            () => this.pimMenu,
+            () => this.page.getByRole('link', { name: 'PIM', exact: true }),
+            () => this.page.getByRole('link', { name: 'PIM' }),
+            () => this.page.getByRole('link', { name: /PIM/i }),
+            () => this.page.getByText('PIM', { exact: true }),
+            () => this.page.getByText('PIM'),
+            () => this.page.locator('a:has-text("PIM")'),
+            () => this.page.locator(':text-is("PIM")'),
+            () => this.page.locator(':text("PIM")'),
+            () => this.page.locator('a').filter({ hasText: 'PIM' }).first(),
+            () => this.page.locator('a').filter({ hasText: 'PIM' }).last(),
+            () => this.page.locator('a.oxd-main-menu-item').filter({ hasText: 'PIM' }),
+            () => this.page.locator('.oxd-main-menu-item').filter({ hasText: 'PIM' }),
+            () => this.page.locator("a[href*='viewPimModule']"),
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)"),
+            () => this.page.locator('a.oxd-main-menu-item.active'),
+            () => this.page.locator('a.oxd-main-menu-item.active:visible'),
+            () => this.page.locator("//a[@class='oxd-main-menu-item active']"),
+            () => this.page.locator("//a[normalize-space()='']"),
+        ];
     }
-     /**
+
+    get adminMenuCandidates(): Array<() => Locator> {
+        return [
+            () => this.adminMenuLink,
+            () => this.page.getByRole('link', { name: 'Admin', exact: true }),
+            () => this.page.getByRole('link', { name: 'Admin' }),
+            () => this.page.getByRole('link', { name: /Admin/i }),
+            () => this.page.locator('a:has-text("Admin")'),
+            () => this.page.locator('a.oxd-main-menu-item.active'),
+            () => this.page.locator('a.oxd-main-menu-item.active:visible'),
+            () => this.page.locator('a').filter({ hasText: 'Admin' }).first(),
+            () => this.page.locator("a[href*='viewAdminModule']"),
+        ];
+    }
+
+    get employeeNameCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeName,
+            () => this.page.getByPlaceholder('Type for hints...').first(),
+            () => this.page.getByRole('textbox', { name: 'Type for hints...' }),
+            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.locator('.oxd-input-group').filter({ hasText: 'Employee Name' }).locator('input').first(),
+            () => this.page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input[1]"),
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"),
+            () => this.page.locator("div.oxd-autocomplete-text-input input").first(),
+        ];
+    }
+
+    get employeeIdCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeId,
+            () => this.page.locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first(),
+            () => this.page.locator("//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']").first(),
+            () => this.page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']").first(),
+            () => this.page.locator('//div[@class="oxd-grid-item oxd-grid-item--gutters"]/div/div/input'),
+            () => this.page.locator('.oxd-input-group:has-text("Employee Id") input').first(),
+            () => this.page.locator('input.oxd-input.oxd-input--active').first(),
+            () => this.page.locator('input.oxd-input.oxd-input--active:visible').first(),
+        ];
+    }
+
+    get employeeStatusCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeStatus,
+            () => this.page.locator('.oxd-input-group').filter({ hasText: 'Employment Status' }).locator('.oxd-select-text').first(),
+            () => this.page.locator('.oxd-input-group:has-text("Employment Status") .oxd-select-text-input').first(),
+            () => this.page.locator('.oxd-input-group:has-text("Employment Status") i.oxd-select-text--arrow').first(),
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow:visible').first(),
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').first(),
+            () => this.page.locator('//div[@class="oxd-select-wrapper"]/div/div/i').first(),
+            () => this.page.locator("//div[3]//div[1]//div[2]//div[1]//div[1]//div[2]//i[1]"),
+            () => this.page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/i[1]"),
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > i:nth-child(1)"),
+        ];
+    }
+
+    get searchButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.searchButton,
+            () => this.page.getByRole('button', { name: 'Search' }),
+            () => this.page.getByRole('button', { name: /Search/i }),
+            () => this.page.getByText('Search', { exact: true }),
+            () => this.page.getByText('Search').first(),
+            () => this.page.locator('button:has-text("Search")').first(),
+            () => this.page.locator(':text-is("Search")').first(),
+            () => this.page.locator(':text("Search")').first(),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space').first(),
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space:visible').first(),
+            () => this.page.locator('button').filter({ hasText: 'Search' }).first(),
+            () => this.page.locator('button').filter({ hasText: 'Search' }).last(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Search']"),
+            () => this.page.locator("button[type='submit']").first(),
+        ];
+    }
+
+    get resetButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.resetButton,
+            () => this.page.getByRole('button', { name: 'Reset' }),
+            () => this.page.getByRole('button', { name: /Reset/i }),
+            () => this.page.getByText('Reset', { exact: true }),
+            () => this.page.getByText('Reset').first(),
+            () => this.page.locator('button:has-text("Reset")').first(),
+            () => this.page.locator(':text-is("Reset")').first(),
+            () => this.page.locator('button.oxd-button--ghost').first(),
+            () => this.page.locator("//button[normalize-space()='Reset']"),
+        ];
+    }
+
+    get tableRowsCandidates(): Array<() => Locator> {
+        return [
+            () => this.tableRows,
+            () => this.page.locator('.oxd-table-card'),
+            () => this.page.locator('.oxd-table-body .oxd-table-row'),
+            () => this.page.locator("//div[@class='oxd-table-row oxd-table-row--with-border']"),
+            () => this.page.locator("div[class='oxd-table-row oxd-table-row--with-border']"),
+            () => this.page.getByRole('row'),
+            () => this.page.locator('div.oxd-table-row.oxd-table-row--with-border'),
+            () => this.page.locator('div.oxd-table-row.oxd-table-row--with-border:visible'),
+        ];
+    }
+
+    // ==========================================
+    // Page Actions with Auto-Healing
+    // ==========================================
+
+    // Opens the PIM module from the sidebar.
+    async clickPimMenu(): Promise<void> {
+        try {
+            const pimLink = await healLocator(this.pimMenuCandidates);
+            await this.click(pimLink);
+        } catch {
+            await this.adminMenu.clickPim();
+        }
+        await this.page.waitForTimeout(2000);
+    }
+
+    // Opens the Admin module from the sidebar.
+    async clickAdminMenu(): Promise<void> {
+        try {
+            const adminLink = await healLocator(this.adminMenuCandidates);
+            await this.click(adminLink);
+        } catch {
+            await this.page.goto('/web/index.php/admin/viewAdminModule');
+        }
+        await this.page.waitForTimeout(2000);
+    }
+
+    /**
      * Runs a full employee search using a partial name match.
-     * The autocomplete dropdown returns multiple matches for a partial
-     * name, so this delegates to AutocompleteComponent.selectExact
-     * (with keystroke events, since fill() skips the events OrangeHRM's
-     * autocomplete listens for) and to SelectDropdownComponent for the
-     * employment-status dropdown.
      */
-    async employeesearchPartial(empname : string,employee :string,employeeId :string,employeeStatus :string) : Promise<void> {
+    async employeesearchPartial(
+        empname: string,
+        employee: string,
+        employeeId: string,
+        employeeStatus: string
+    ): Promise<void> {
         await this.employeeNameAutocomplete.selectExact(empname, employee, { useKeystrokes: true });
 
-        await this.waitForElement(this.employeeId);
-        await this.fill(this.employeeId,employeeId);
+        const empIdField = await healLocator(this.employeeIdCandidates);
+        await this.waitForElement(empIdField);
+        await this.fill(empIdField, employeeId);
 
+        const statusDropdown = await healLocator(this.employeeStatusCandidates);
         await this.employeeStatusDropdownComponent.selectByLoopMatch(this.employeeStatusDropdown, employeeStatus);
 
-        await this.waitForElement(this.searchButton);
-        await this.searchButton.click();
-
+        const searchBtn = await healLocator(this.searchButtonCandidates);
+        await this.waitForElement(searchBtn);
+        await searchBtn.click();
     }
 
     /**
@@ -79,10 +304,13 @@ export class PimPage extends BasePage{
      */
     async searchByEmployeeId(empId: string): Promise<void> {
         await this.clickPimMenu();
-        await this.waitForElement(this.employeeId);
-        await this.fill(this.employeeId, empId);
-        await this.waitForElement(this.searchButton);
-        await this.click(this.searchButton);
+        const empIdField = await healLocator(this.employeeIdCandidates);
+        await this.waitForElement(empIdField);
+        await this.fill(empIdField, empId);
+
+        const searchBtn = await healLocator(this.searchButtonCandidates);
+        await this.waitForElement(searchBtn);
+        await this.click(searchBtn);
     }
 
     /**
@@ -90,8 +318,9 @@ export class PimPage extends BasePage{
      */
     async searchByEmployeeName(name: string): Promise<void> {
         await this.employeeNameAutocomplete.selectExact(name);
-        await this.waitForElement(this.searchButton);
-        await this.click(this.searchButton);
+        const searchBtn = await healLocator(this.searchButtonCandidates);
+        await this.waitForElement(searchBtn);
+        await this.click(searchBtn);
         await this.page.waitForTimeout(2000);
     }
 
@@ -99,18 +328,20 @@ export class PimPage extends BasePage{
      * Clears the Employee Name search field.
      */
     async clearEmployeeName(): Promise<void> {
-        await this.waitForElement(this.employeeName);
-        await this.employeeName.click();
-        await this.employeeName.press('Control+A');
-        await this.employeeName.press('Backspace');
+        const empNameInput = await healLocator(this.employeeNameCandidates);
+        await this.waitForElement(empNameInput);
+        await empNameInput.click();
+        await empNameInput.press('Control+A');
+        await empNameInput.press('Backspace');
     }
 
     /**
      * Selects an employment status from the dropdown and clicks Search.
      */
     async searchByEmploymentStatus(status?: string): Promise<void> {
-        await this.waitForElement(this.employeeStatus);
-        await this.click(this.employeeStatus);
+        const statusField = await healLocator(this.employeeStatusCandidates);
+        await this.waitForElement(statusField);
+        await this.click(statusField);
         const options = this.page.locator('.oxd-select-dropdown [role="option"], .oxd-select-dropdown div, .oxd-select-option');
         await options.first().waitFor({ state: 'visible', timeout: 5000 });
 
@@ -126,8 +357,9 @@ export class PimPage extends BasePage{
             await options.nth(1).click();
         }
 
-        await this.waitForElement(this.searchButton);
-        await this.click(this.searchButton);
+        const searchBtn = await healLocator(this.searchButtonCandidates);
+        await this.waitForElement(searchBtn);
+        await this.click(searchBtn);
         await this.page.waitForTimeout(2000);
     }
 
@@ -136,13 +368,14 @@ export class PimPage extends BasePage{
      */
     async clickFirstResultRow(): Promise<void> {
         await this.page.waitForTimeout(1000);
-        const count = await this.tableRows.count();
+        const rows = await healLocator(this.tableRowsCandidates);
+        const count = await rows.count();
         if (count > 0) {
-            const cell = this.tableRows.first().locator('.oxd-table-cell').nth(2);
+            const cell = rows.first().locator('.oxd-table-cell').nth(2);
             if (await cell.isVisible().catch(() => false)) {
                 await cell.click();
             } else {
-                await this.tableRows.first().click();
+                await rows.first().click();
             }
             await this.page.waitForTimeout(2000);
             console.log('Clicked matching result row to view details');
@@ -156,8 +389,10 @@ export class PimPage extends BasePage{
      */
     async resetSearch(): Promise<void> {
         await this.clickPimMenu();
-        await this.waitForElement(this.resetButton);
-        await this.click(this.resetButton);
+        const resetBtn = await healLocator(this.resetButtonCandidates);
+        await this.waitForElement(resetBtn);
+        await this.click(resetBtn);
         await this.page.waitForTimeout(1000);
     }
 }
+

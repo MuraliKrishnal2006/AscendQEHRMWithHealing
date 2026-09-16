@@ -22,6 +22,32 @@ export class ReportsPage extends BasePage {
             }
         );
     }
+      // ================= Candidate Locator Pools =================
+
+    get reportsCandidates(): Array<() => Locator> {
+        return [
+            () => this.Reports,
+            () => this.page.getByText('Reports', { exact: true }),
+            () => this.page.locator('span:has-text("Reports")'),
+            () => this.page.locator(':text-is("Reports")'),
+            () => this.page.locator(':text("Reports")'),
+            () => this.page.locator('span').filter({ hasText: 'Reports' }),
+            () => this.page.locator("//span[normalize-space()='Reports']")
+        ];
+    }
+
+    get myLeaveEntitlementsReportCandidates(): Array<() => Locator> {
+        return [
+            () => this.MyLeaveEntitlementsReport,
+            () => this.page.getByRole('menuitem', { name: 'My Leave Entitlements and Usage Report' }),
+            () => this.page.getByRole('menuitem', { name: /My Leave Entitlements and Usage Report/i }),
+            () => this.page.getByText('My Leave Entitlements and Usage Report', { exact: true }),
+            () => this.page.getByText('My Leave Entitlements and Usage Report'),
+            () => this.page.locator('a:has-text("My Leave Entitlements and Usage Report")'),
+            () => this.page.locator('a').filter({ hasText: 'My Leave Entitlements and Usage Report' })
+        ];
+    }
+
 
     async openMyLeaveEntitlementsReport(): Promise<void> {
 

@@ -39,7 +39,7 @@ export class PimPages extends BasePage {
         this.Pimmenu = page.getByRole('link', { name: 'PIM' });
 
         // 2. Employee Name search input
-        this.employeeName = page.getByPlaceholder('Type for hints...').first();
+        this.employeeName = page.getByPlaceholder('Enter').first();
         this.employeeNameDropdown = page.locator('.oxd-autocomplete-dropdown .oxd-autocomplete-option');
 
         // 3. Employee ID search input

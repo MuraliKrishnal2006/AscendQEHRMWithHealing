@@ -1,45 +1,29 @@
-import {test as base} from '@playwright/test';
-import {LoginPage} from '../pages/LoginPage';
-import {DashboardPage} from '../pages/DashboardPage';
-import {AddEmployee} from '../pages/AddEmployee';
+import { test as base } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { DashboardPage } from '../pages/DashboardPage';
+import { AddEmployee } from '../pages/AddEmployee';
 import { AddUser } from '../pages/AddUser';
-import { Timepage } from '../pages/Timepage';
 import { LeavePage } from '../pages/LeavePage';
-import { LeaveListPage} from '../pages/LeaveListPage';
-import { ReportsPage } from '../pages/ReportsPage';
-import { DirectoryPage } from '../pages/DirectoryPage';
 import { PimPage } from '../pages/PimPage';
-import {EmployeeDetailsPage} from '../pages/TC-03-PIMemployee';
-import {AdminPage} from '../pages/TC-07-AdminUserManagement';
+import { EmployeeDetailsPage } from '../pages/TC-03-PIMemployee';
 import { PimPages } from '../pages/PimPages';
 import { Tc12_UItablesPage } from '../pages/Tc12_UItablesPage';
 import { AdminMenuComponent } from '../components/adminmenu';
 import { CommonMenuComponent } from '../components/commonmenuitems';
 
-
-
-
- 
 /**
  * page.fixture.ts — injects every Page Object into tests as a fixture,
- * so specs never do `new LoginPage(page)` manually. Add a new page
- * class here once, and every test gets access to it via destructuring
- * (e.g. `async ({ loginPage }) => {...}`).
+ * so specs never do `new LoginPage(page)` manually.
  */
 
- type Pages ={
-    loginPage : LoginPage;
-    dashboardPage : DashboardPage;
-    addEmployee : AddEmployee;
-    addUser : AddUser;
-    timePage : Timepage;
-    leavePage : LeavePage;
-    leaveListPage : LeaveListPage;
-    reportsPage : ReportsPage;
-    directoryPage:DirectoryPage;
-    pimPage : PimPage;
-    employeeDetailsPage : EmployeeDetailsPage;
-    adminPage : AdminPage;
+type Pages = {
+    loginPage: LoginPage;
+    dashboardPage: DashboardPage;
+    addEmployee: AddEmployee;
+    addUser: AddUser;
+    leavePage: LeavePage;
+    pimPage: PimPage;
+    employeeDetailsPage: EmployeeDetailsPage;
     pimPages: PimPages;
     tc12_UItablesPage: Tc12_UItablesPage;
     tc12Page: Tc12_UItablesPage;
@@ -47,62 +31,43 @@ import { CommonMenuComponent } from '../components/commonmenuitems';
     commonMenu: CommonMenuComponent;
 };
 
- export const test = base.extend<Pages>({
-    loginPage : async ({page},use)=>{
+export const test = base.extend<Pages>({
+    loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));
     },
-    dashboardPage : async ({page},use)=>{
+    dashboardPage: async ({ page }, use) => {
         await use(new DashboardPage(page));
     },
-   
-    addEmployee : async ({page},use)=>{
+    addEmployee: async ({ page }, use) => {
         await use(new AddEmployee(page));
     },
-     
-    addUser : async ({page},use)=>{
+    addUser: async ({ page }, use) => {
         await use(new AddUser(page));
     },
-    pimPage : async ({page},use)=>{
+    pimPage: async ({ page }, use) => {
         await use(new PimPage(page));
     },
-    timePage : async ({page},use)=>{
-        await use(new Timepage(page));
-    },
-    leavePage : async ({page},use)=>{
+    leavePage: async ({ page }, use) => {
         await use(new LeavePage(page));
     },
-    leaveListPage : async ({page},use)=>{
-        await use(new LeaveListPage(page));
-    },
-    reportsPage : async ({page},use)=>{
-        await use(new ReportsPage(page));
-    },
-    directoryPage : async ({page},use)=>{
-        await use(new DirectoryPage(page));
-    },
-    employeeDetailsPage : async ({page},use)=>{
+    employeeDetailsPage: async ({ page }, use) => {
         await use(new EmployeeDetailsPage(page));
     },
-    adminPage : async ({page},use)=>{
-        await use(new AdminPage(page));
-    },
-    pimPages : async ({page},use)=>{
+    pimPages: async ({ page }, use) => {
         await use(new PimPages(page));
     },
-    tc12_UItablesPage : async ({ page }, use)=>{
+    tc12_UItablesPage: async ({ page }, use) => {
         await use(new Tc12_UItablesPage(page));
     },
-    tc12Page : async ({ page }, use)=>{
+    tc12Page: async ({ page }, use) => {
         await use(new Tc12_UItablesPage(page));
     },
-    adminMenu : async ({page},use)=>{
+    adminMenu: async ({ page }, use) => {
         await use(new AdminMenuComponent(page));
     },
-    commonMenu : async ({page},use)=>{
+    commonMenu: async ({ page }, use) => {
         await use(new CommonMenuComponent(page));
     },
+});
 
-
- });
-
- export const expect = test.expect;
+export const expect = test.expect;

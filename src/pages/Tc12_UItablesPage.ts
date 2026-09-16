@@ -288,20 +288,29 @@ export class Tc12_UItablesPage extends BasePage {
     async clickSearch(): Promise<void> {
         await this.waitForElement(this.searchButton);
         await this.click(this.searchButton);
+        await this.waitForLoader();
     }
 
     async scrollToRecord(name?: string): Promise<void> {
+        await this.waitForLoader();
         const targetRow = name 
             ? this.tableRows.filter({ hasText: name }).first() 
             : this.tableRows.first();
-        await this.waitForElement(targetRow);
-        await targetRow.scrollIntoViewIfNeeded();
-        await this.page.waitForTimeout(1000);
+        await targetRow.waitFor({ state: 'visible' });
+        try {
+            await targetRow.scrollIntoViewIfNeeded();
+        } catch {
+            await this.waitForLoader();
+            await targetRow.waitFor({ state: 'visible' });
+            await targetRow.scrollIntoViewIfNeeded();
+        }
+        await this.page.waitForTimeout(500);
     }
 
     async clickReset(): Promise<void> {
         await this.waitForElement(this.resetButton);
         await this.click(this.resetButton);
+        await this.waitForLoader();
     }
 }
 

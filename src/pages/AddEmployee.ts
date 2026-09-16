@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { healLocator } from '../utils/locatorHeal';
+import { healLocator } from '../utils/Locator-healing-utility';
 /**
  * AddEmployee — models the "Add Employee" form under PIM.
  * Driven by CSV data (see src/data/employee.csv + tests/ui/pim.spec.ts)

@@ -36,6 +36,15 @@ export class LoginPage extends BasePage {
         await this.goto('/web/index.php/auth/login');
     }
 
+    async verifyUsernameVisible(): Promise<void> {
+        await this.healExpectVisible([
+            () => this.UsernameInput,
+            () => this.page.locator('input[placeholder="Username"]'),
+            () => this.page.getByRole('textbox', { name: 'Username' }),
+            () => this.page.locator('input[type="text"][placeholder="Username"]')
+        ]);
+    }
+
     async clickUsername(): Promise<void> {
         await this.healClick([
             () => this.UsernameInput,

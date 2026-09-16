@@ -37,82 +37,23 @@ export class PimPage extends BasePage {
         super(page);
 
         // Sidebar Navigation Links
-        this.pimMenu = page.getByRole('link', { name: 'PIM', exact: true })
-            .or(page.getByRole('link', { name: 'PIM' }))
-            .or(page.getByRole('link', { name: /PIM/i }))
-            .or(page.getByText('PIM', { exact: true }))
-            .or(page.getByText('PIM'))
-            .or(page.locator('a:has-text("PIM")'))
-            .or(page.locator(':text-is("PIM")'))
-            .or(page.locator(':text("PIM")'))
-            .or(page.locator("a[href*='viewPimModule']"))
-            .or(page.locator('.oxd-main-menu-item').filter({ hasText: 'PIM' }))
-            .or(page.locator('a.oxd-main-menu-item').filter({ hasText: 'PIM' }))
-            .or(page.locator('a').filter({ hasText: 'PIM' }).first())
-            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)"))
-            .first();
+        this.pimMenu = page.getByRole('link', { name: 'PIM' });
+        this.adminMenuLink = page.getByRole('link', { name: 'Admin' });
 
-        this.adminMenuLink = page.getByRole('link', { name: 'Admin', exact: true })
-            .or(page.getByRole('link', { name: /Admin/i }))
-            .or(page.locator('a:has-text("Admin")'))
-            .or(page.locator("a[href*='viewAdminModule']"))
-            .or(page.locator('.oxd-main-menu-item').filter({ hasText: 'Admin' }))
-            .first();
+        // Search Form Inputs
+        this.employeeName = page.getByPlaceholder('Type for hints...').first();
+        this.employeeNameDropdown = page.locator('.oxd-autocomplete-dropdown .oxd-autocomplete-option');
+        this.employeeId = page.locator('.oxd-table-filter, .oxd-layout-context').locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first();
+        this.employeeStatus = page.locator('.oxd-input-group').filter({ hasText: 'Employment Status' }).locator('.oxd-select-text').first();
+        this.employeeStatusDropdown = page.locator('.oxd-select-dropdown .oxd-select-option');
 
-        // Search Form Inputs with resilient .or() chains
-        this.employeeName = page.getByPlaceholder('Type for hints...').first()
-            .or(page.getByRole('textbox', { name: 'Type for hints...' }))
-            .or(page.getByRole('textbox', { name: /Type for hints\.\.\./i }))
-            .or(page.locator('.oxd-input-group').filter({ hasText: 'Employee Name' }).locator('input').first())
-            .or(page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input[1]"))
-            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > input:nth-child(2)"))
-            .first();
+        // Buttons
+        this.searchButton = page.getByRole('button', { name: 'Search' }).first();
+        this.resetButton = page.getByRole('button', { name: 'Reset' }).first();
 
-        this.employeeNameDropdown = page.locator('.oxd-autocomplete-dropdown .oxd-autocomplete-option, .oxd-autocomplete-option, [role="option"]');
-
-        this.employeeId = page.locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first()
-            .or(page.locator("//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']").first())
-            .or(page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']").first())
-            .or(page.locator('//div[@class="oxd-grid-item oxd-grid-item--gutters"]/div/div/input').first())
-            .or(page.locator('.oxd-input-group:has-text("Employee Id") input').first())
-            .or(page.locator('input.oxd-input.oxd-input--active').first())
-            .or(page.locator('input.oxd-input.oxd-input--active:visible').first())
-            .first();
-
-        this.employeeStatus = page.locator('.oxd-input-group').filter({ hasText: 'Employment Status' }).locator('.oxd-select-text').first()
-            .or(page.locator('.oxd-input-group:has-text("Employment Status") .oxd-select-text-input').first())
-            .or(page.locator('.oxd-input-group:has-text("Employment Status") i.oxd-select-text--arrow').first())
-            .or(page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').first())
-            .or(page.locator('i.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow:visible').first())
-            .or(page.locator('//div[@class="oxd-select-wrapper"]/div/div/i').first())
-            .or(page.locator("//div[3]//div[1]//div[2]//div[1]//div[1]//div[2]//i[1]").first())
-            .or(page.locator("/html[1]/body[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/i[1]").first())
-            .or(page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > i:nth-child(1)").first())
-            .first();
-
-        this.employeeStatusDropdown = page.locator('.oxd-select-dropdown .oxd-select-option, .oxd-select-option, [role="option"]');
-
-        this.searchButton = page.getByRole('button', { name: 'Search' })
-            .or(page.getByRole('button', { name: /Search/i }))
-            .or(page.getByText('Search', { exact: true }))
-            .or(page.locator('button:has-text("Search")'))
-            .or(page.locator('button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space'))
-            .or(page.locator("//button[normalize-space()='Search']"))
-            .first();
-
-        this.resetButton = page.getByRole('button', { name: 'Reset' })
-            .or(page.getByRole('button', { name: /Reset/i }))
-            .or(page.getByText('Reset', { exact: true }))
-            .or(page.locator('button:has-text("Reset")'))
-            .or(page.locator(':text-is("Reset")'))
-            .first();
-
+        // Tabs & Table
         this.employeeListTab = page.getByRole('link', { name: 'Employee List' });
-
-        this.tableRows = page.locator('.oxd-table-card')
-            .or(page.locator('.oxd-table-body .oxd-table-row'))
-            .or(page.locator("div[class='oxd-table-row oxd-table-row--with-border']"))
-            .or(page.locator('div.oxd-table-row.oxd-table-row--with-border'));
+        this.tableRows = page.locator('.oxd-table-card');
 
         this.employeeNameAutocomplete = new AutocompleteComponent(page, this.employeeName, this.employeeNameDropdown);
         this.employeeStatusDropdownComponent = new SelectDropdownComponent(page, this.employeeStatus);
@@ -177,14 +118,11 @@ export class PimPage extends BasePage {
 
     get employeeIdCandidates(): Array<() => Locator> {
         return [
-            () => this.employeeId,
-            () => this.page.locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first(),
-            () => this.page.locator("//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']").first(),
+            () => this.page.locator('.oxd-table-filter, .oxd-layout-context').locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input').first(),
+            () => this.page.locator('.oxd-input-group').filter({ has: this.page.getByText('Employee Id', { exact: true }) }).locator('input').first(),
+            () => this.page.locator("//label[text()='Employee Id']/../following-sibling::div//input").first(),
             () => this.page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']").first(),
-            () => this.page.locator('//div[@class="oxd-grid-item oxd-grid-item--gutters"]/div/div/input'),
-            () => this.page.locator('.oxd-input-group:has-text("Employee Id") input').first(),
-            () => this.page.locator('input.oxd-input.oxd-input--active').first(),
-            () => this.page.locator('input.oxd-input.oxd-input--active:visible').first(),
+            () => this.employeeId,
         ];
     }
 

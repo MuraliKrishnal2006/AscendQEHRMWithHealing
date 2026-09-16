@@ -19,23 +19,37 @@ readonly commonmenu: CommonMenuComponent;
         this.maintenance = page.getByRole('link', { name: 'Maintenance' });
     }
 
+    private async clearSidebarSearchIfNeeded(): Promise<void> {
+        const sidebarSearch = this.page.locator('.oxd-sidepanel input[placeholder="Search"]');
+        if (await sidebarSearch.isVisible().catch(() => false)) {
+            const val = await sidebarSearch.inputValue().catch(() => '');
+            if (val) {
+                await sidebarSearch.fill('');
+            }
+        }
+    }
+
     async clickAdmin() {
+        await this.clearSidebarSearchIfNeeded();
         await this.click(this.admin);
         await this.page.waitForURL(/admin/);
     }
     
     async clickPim() {
+        await this.clearSidebarSearchIfNeeded();
         await this.click(this.pim);
         await this.page.waitForURL(/pim/);
     }
     
     async clickRecruitment() {
+        await this.clearSidebarSearchIfNeeded();
         await this.click(this.recruitment);
         await this.page.waitForURL(/recruitment/);
     }
     
     
     async clickMaintenance() {
+        await this.clearSidebarSearchIfNeeded();
         await this.click(this.maintenance);
         await this.page.waitForURL(/maintenance/);
     }

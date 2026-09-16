@@ -1,5 +1,1 @@
-export const Pimpagedata ={
-    empName : 'Akhi',
-    employee : 'Akhila Chirumamilla',
- 
-}
+export * from './TC12_UItables';

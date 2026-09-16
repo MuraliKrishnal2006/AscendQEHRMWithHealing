@@ -28,7 +28,88 @@ export class DashboardPage extends BasePage {
         this.assignLeaveButton = page.locator('button[title="Assign Leave"]').or(page.locator('.orangehrm-quick-launch-card').filter({ hasText: 'Assign Leave' })).first();
         this.myLeaveButton = page.locator('button[title="My Leave"]').or(page.locator('.orangehrm-quick-launch-card').filter({ hasText: 'My Leave' })).first();
     }
+         // ================= Candidate Locator Pools =================
 
+    get dashboardHeader(): Array<() => Locator> {
+        return [
+            () => this.page.getByRole('heading', { name: 'Dashboard' }),
+            () => this.page.getByRole('heading', { name: /Dashboard/i }),
+            () => this.page.getByRole('heading'),
+            () => this.page.locator('h6:has-text("Dashboard")'),
+            () => this.page.locator('h6.oxd-text.oxd-text--h6.oxd-topbar-header-breadcrumb-module'),
+            () => this.page.locator('h6.oxd-text.oxd-text--h6.oxd-topbar-header-breadcrumb-module:visible')
+        ];
+    }
+
+    get quickLaunchWidgetCandidates(): Array<() => Locator> {
+        return [
+            () => this.quickLaunchWidget,
+            () => this.page.locator('div.oxd-sheet.oxd-sheet--rounded.oxd-sheet--white.orangehrm-dashboard-widget').filter({ hasText: 'Quick Launch' }),
+            () => this.page.locator('.oxd-sheet.orangehrm-dashboard-widget:has-text("Quick Launch")'),
+            () => this.page.locator('div.oxd-sheet.orangehrm-dashboard-widget:has-text("Quick Launch")'),
+            () => this.page.getByText('Quick Launch', { exact: true }),
+            () => this.page.getByText('Quick Launch')
+        ];
+    }
+
+    get employeeDistributionSubUnitWidgetCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeDistributionSubUnitWidget,
+            () => this.page.locator('div').filter({ hasText: 'Employee Distribution by Sub Unit' }).first(),
+            () => this.page.locator('div:has-text("Employee Distribution by Sub Unit")'),
+            () => this.page.locator('div').filter({ hasText: 'Employee Distribution by Sub Unit' }),
+            () => this.page.locator('.orangehrm-dashboard-widget-header'),
+            () => this.page.locator('.oxd-sheet.orangehrm-dashboard-widget').filter({ hasText: 'Employee Distribution by Sub Unit' })
+        ];
+    }
+
+    get assignLeaveButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.assignLeaveButton,
+            () => this.page.locator("//button[@title='Assign Leave']"),
+            () => this.page.locator("button[title='Assign Leave']"),
+            () => this.page.getByTitle('Assign Leave'),
+            () => this.page.getByTitle('Assign Leave', { exact: true }),
+            () => this.page.locator('button.oxd-icon-button.orangehrm-quick-launch-icon'),
+            () => this.page.locator('button.oxd-icon-button.orangehrm-quick-launch-icon:visible')
+        ];
+    }
+
+    get myLeaveButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.myLeaveButton,
+            () => this.page.locator("//button[@title='My Leave']"),
+            () => this.page.locator("button[title='My Leave']"),
+            () => this.page.getByTitle('My Leave'),
+            () => this.page.getByTitle('My Leave', { exact: true }),
+            () => this.page.locator('button.oxd-icon-button.orangehrm-quick-launch-icon'),
+            () => this.page.locator('button.oxd-icon-button.orangehrm-quick-launch-icon:visible')
+        ];
+    }
+
+    get userDropdownCandidates(): Array<() => Locator> {
+        return [
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-userdropdown-icon'),
+            () => this.page.locator('i.oxd-icon.bi-caret-down-fill.oxd-userdropdown-icon:visible'),
+            () => this.page.locator("//i[@class='oxd-icon bi-caret-down-fill oxd-userdropdown-icon']"),
+            () => this.page.locator(".oxd-icon.bi-caret-down-fill.oxd-userdropdown-icon"),
+            () => this.page.locator('i:visible')
+        ];
+    }
+
+    get logoutButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.logoutButton,
+            () => this.page.getByRole('menuitem', { name: 'Logout' }),
+            () => this.page.getByRole('menuitem', { name: /Logout/i }),
+            () => this.page.getByText('Logout', { exact: true }),
+            () => this.page.getByText('Logout'),
+            () => this.page.locator('a:has-text("Logout")'),
+            () => this.page.locator(':text-is("Logout")'),
+            () => this.page.locator(':text("Logout")'),
+            () => this.page.locator('a').filter({ hasText: 'Logout' })
+        ];
+    }
     /**
      Confirms the dashboard has loaded by reading its header text.
      */

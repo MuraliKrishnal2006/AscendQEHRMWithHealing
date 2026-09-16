@@ -33,6 +33,87 @@ export class AdminPage extends BasePage {
         this.editUserStatusDropdown = page.locator('.oxd-input-group').filter({ has: page.getByText('Status', { exact: true }) }).locator('.oxd-select-text');
         this.saveButton = page.getByRole('button', { name: 'Save' });
     }
+     get usernameInputCandidates(): Array<() => Locator> {
+        return [
+            () => this.usernameInput,
+            () => this.page.locator("//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']"),
+            () => this.page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']"),
+            () => this.page.getByRole('textbox'),
+            () => this.page.locator('input.oxd-input.oxd-input--active'),
+            () => this.page.locator('input.oxd-input.oxd-input--active:visible'),
+            () => this.page.locator('input:visible')
+        ];
+    }
+
+    get userRoleDropdownCandidates(): Array<() => Locator> {
+        return [
+            () => this.userRoleDropdown,
+            () => this.page.locator('div').filter({ hasText: '-- Select --' }).first(),
+            () => this.page.locator('div').filter({ hasText: '-- Select --' }).last(),
+            () => this.page.getByText('-- Select --', { exact: true }),
+            () => this.page.locator('div.oxd-select-text.oxd-select-text--active'),
+            () => this.page.locator('div').filter({ hasText: '-- Select --' })
+        ];
+    }
+
+    get statusDropdownCandidates(): Array<() => Locator> {
+        return [
+            () => this.statusDropdown,
+            () => this.page.locator('.oxd-input-group').filter({ has: this.page.getByText('Status', { exact: true }) }).locator('.oxd-select-text'),
+            () => this.page.locator('div.oxd-select-text.oxd-select-text--active').nth(1),
+            () => this.page.locator('div').filter({ hasText: '-- Select --' }).nth(1),
+            () => this.page.locator('div.oxd-select-text.oxd-select-text--active:visible').nth(1)
+        ];
+    }
+
+    get editUserStatusDropdownCandidates(): Array<() => Locator> {
+        return [
+            () => this.editUserStatusDropdown,
+            () => this.page.locator("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > form:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)"),
+            () => this.page.locator('div.oxd-select-text-input'),
+            () => this.page.locator('div.oxd-select-text-input:visible'),
+            () => this.page.locator('.oxd-select-text-input'),
+            () => this.page.locator('div:has-text("Enabled")'),
+            () => this.page.locator('div').filter({ hasText: 'Enabled' }),
+        ];
+    }
+
+    get searchButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.searchButton,
+            () => this.page.locator('button').filter({ hasText: 'Search' }).first(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Search']"),
+            () => this.page.locator("button[type='submit']"),
+            () => this.page.locator(':has-text("Search")'),
+            () => this.page.locator('button:visible')
+        ];
+    }
+
+    get resetButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.resetButton,
+            () => this.page.locator('button').filter({ hasText: 'Reset' }).first(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(0),
+            () => this.page.locator("//button[normalize-space()='Reset']"),
+            () => this.page.locator(".oxd-button.oxd-button--medium.oxd-button--ghost"),
+            () => this.page.locator(':has-text("Reset")'),
+            () => this.page.locator('button:visible')
+        ];
+    }
+
+    get saveButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.saveButton,
+            () => this.page.locator('button.oxd-button.oxd-button--medium.oxd-button--secondary.orangehrm-left-space'),
+            () => this.page.locator('button').filter({ hasText: 'Save' }),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Save']"),
+            () => this.page.locator("button[type='submit']"),
+            () => this.page.locator('button:visible'),
+        ];
+    }
+
 
     /**
      * Helper to select an option from an OrangeHRM/AscendqeHRM custom dropdown

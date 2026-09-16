@@ -22,7 +22,7 @@ export class DirectoryPage extends BasePage {
         this.employeeNameInput = page.getByPlaceholder('Type for hints...').first();
         this.searchButton = page.getByRole('button', { name: 'Search' });
         this.resetButton = page.getByRole('button', { name: 'Reset' });
-        this.directoryCards = page.locator('.oxd-grid-item, .orangehrm-directory-card');
+        this.directoryCards = page.locator('.orangehrm-container .oxd-grid-item, .orangehrm-directory-card, .orangehrm-corporate-directory-card');
 
         this.employeeNameAutocomplete = new AutocompleteComponent(
             page,
@@ -31,7 +31,42 @@ export class DirectoryPage extends BasePage {
         );
         this.commonMenu = new CommonMenuComponent(page);
     }
+        // ================= Candidate Locator Pools =================
 
+    get employeeNameInputCandidates(): Array<() => Locator> {
+        return [
+            () => this.employeeNameInput,
+            () => this.page.getByRole('textbox', { name: /Type for hints\.\.\./i }),
+            () => this.page.getByPlaceholder('Type for hints...'),
+            () => this.page.getByPlaceholder('Type for hints...', { exact: true }),
+            () => this.page.locator("//input[@placeholder='Type for hints...']"),
+            () => this.page.locator("input[placeholder='Type for hints...']")
+        ];
+    }
+
+    get searchButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.searchButton,
+            () => this.page.locator('button').filter({ hasText: 'Search' }).last(),
+            () => this.page.locator('div.oxd-form-actions').locator('button').nth(1),
+            () => this.page.locator("//button[normalize-space()='Search']"),
+            () => this.page.locator("button[type='submit']"),
+            () => this.page.getByRole('button'),
+            () => this.page.locator('button:visible'),
+            () => this.page.locator(':has-text("Search")')
+        ];
+    }
+
+    get resetButtonCandidates(): Array<() => Locator> {
+        return [
+            () => this.resetButton,
+            () => this.page.locator("//button[normalize-space()='Reset']"),
+            () => this.page.locator("button[type='reset']"),
+            () => this.page.getByRole('button'),
+            () => this.page.locator('button:visible'),
+            () => this.page.locator(':has-text("Reset")')
+        ];
+    }
     /**
      * Navigates to the Directory module from the sidebar.
      */

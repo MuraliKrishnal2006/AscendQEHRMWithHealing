@@ -296,6 +296,7 @@ export class Tc12_UItablesPage extends BasePage {
         const targetRow = name 
             ? this.tableRows.filter({ hasText: name }).first() 
             : this.tableRows.first();
+<<<<<<< HEAD
         await targetRow.waitFor({ state: 'visible' });
         try {
             await targetRow.scrollIntoViewIfNeeded();
@@ -305,6 +306,11 @@ export class Tc12_UItablesPage extends BasePage {
             await targetRow.scrollIntoViewIfNeeded();
         }
         await this.page.waitForTimeout(500);
+=======
+        await this.waitForElement(targetRow);
+        //await targetRow.scrollIntoViewIfNeeded();
+        await this.page.waitForTimeout(1000);
+>>>>>>> f0a1113 (Update employee login and TC12 automation)
     }
 
     async clickReset(): Promise<void> {

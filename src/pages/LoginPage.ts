@@ -65,6 +65,14 @@ export class LoginPage extends BasePage {
             username
         );
     }
+    async verifyUsernameVisible(): Promise<void> {
+        await this.healExpectVisible([
+            () => this.UsernameInput,
+            () => this.page.locator('input[placeholder="Username"]'),
+            () => this.page.getByRole('textbox', { name: 'Username' }),
+            () => this.page.locator('input[type="text"][placeholder="Username"]')
+        ]);
+    }
 
     async fillPassword(password: string): Promise<void> {
         await this.healFill(

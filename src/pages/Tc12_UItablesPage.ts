@@ -291,28 +291,17 @@ export class Tc12_UItablesPage extends BasePage {
         await this.waitForLoader();
     }
 
-    async scrollToRecord(name?: string): Promise<void> {
-        await this.waitForLoader();
-        const targetRow = name 
-            ? this.tableRows.filter({ hasText: name }).first() 
-            : this.tableRows.first();
-<<<<<<< HEAD
-        await targetRow.waitFor({ state: 'visible' });
-        try {
-            await targetRow.scrollIntoViewIfNeeded();
-        } catch {
-            await this.waitForLoader();
-            await targetRow.waitFor({ state: 'visible' });
-            await targetRow.scrollIntoViewIfNeeded();
-        }
-        await this.page.waitForTimeout(500);
-=======
-        await this.waitForElement(targetRow);
-        //await targetRow.scrollIntoViewIfNeeded();
-        await this.page.waitForTimeout(1000);
->>>>>>> f0a1113 (Update employee login and TC12 automation)
-    }
+   async scrollToRecord(name?: string): Promise<void> {
+    await this.waitForLoader();
 
+    const targetRow = name
+        ? this.tableRows.filter({ hasText: name }).first()
+        : this.tableRows.first();
+
+    await this.waitForElement(targetRow);
+    //await targetRow.scrollIntoViewIfNeeded();
+    await this.page.waitForTimeout(1000);
+}
     async clickReset(): Promise<void> {
         await this.waitForElement(this.resetButton);
         await this.click(this.resetButton);

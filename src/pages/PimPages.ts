@@ -4,6 +4,7 @@ import { AutocompleteComponent } from '../components/AutocompleteComponent';
 import { SelectDropdownComponent } from '../components/SelectDropdownComponent';
 import { TopNavComponent } from '../components/TopNavComponent';
 import { healLocator } from '../utils/Locator-healing-utility';
+import { showAction } from '../utils/LiveActivity';
 
 /**
  * PimPages — models the PIM module's employee search screen
@@ -129,19 +130,24 @@ export class PimPages extends BasePage {
     // ==========================================
 
     // Opens the PIM module from the sidebar.
-    async clickPimMenu(): Promise<void> {
-        try {
-            const pimLink = await healLocator(this.pimMenuCandidates);
-            await this.click(pimLink);
-        } catch {
-            await this.topNav.goTo('PIM', false);
-        }
-    }
+   async clickPimMenu(): Promise<void> {
+    await showAction(this.page, 'Click on PIM link');
 
-    // Opens the Admin module from the sidebar.
-    async clickAdminMenu(): Promise<void> {
-        await this.topNav.goTo('Admin');
+    try {
+        const pimLink = await healLocator(this.pimMenuCandidates);
+        await this.click(pimLink);
+    } catch {
+        await this.topNav.goTo('PIM', false);
     }
+}
+
+   // Opens the Admin module from the sidebar.
+async clickAdminMenu(): Promise<void> {
+    await showAction(this.page, 'Click on Admin link');
+    await this.page.waitForTimeout(2000);
+
+    await this.topNav.goTo('Admin');
+}
 
     async searchByEmployeeId(employeeId: string): Promise<void> {
         const empIdField = await healLocator(this.employeeIdCandidates);

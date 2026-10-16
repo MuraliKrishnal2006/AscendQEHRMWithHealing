@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { DashboardPage } from '../pages/DashboardPage';
-import { AddEmployee } from '../pages/AddEmployee';
+import { AddEmployee } from '../pages/AddEmployee12';
 import { AddUser } from '../pages/AddUser';
 import { LeavePage } from '../pages/LeavePage';
 import { PimPage } from '../pages/PimPage';

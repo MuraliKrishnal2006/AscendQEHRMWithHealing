@@ -18,6 +18,9 @@ export class LeaveListPage extends BasePage {
     readonly RejectLeave: Locator;
     readonly CancelButton: Locator;
     readonly successMessage: Locator;
+    readonly leaveTable: Locator;
+    readonly leaveRows: Locator;
+    readonly actionMenuButtons: Locator;
 
     readonly employeeNameAutocomplete: AutocompleteComponent;
 
@@ -44,6 +47,9 @@ export class LeaveListPage extends BasePage {
 
         this.CancelButton = page.getByRole('button', { name: 'Cancel' });
         this.successMessage = page.locator('.message.success');
+        this.leaveTable = page.locator('.oxd-table').describe('Leave requests results table');
+        this.leaveRows = page.locator('.oxd-table-row').describe('Leave request result rows');
+        this.actionMenuButtons = page.locator('.oxd-table-cell-actions button').describe('Actions menu for a leave request');
 
         this.employeeNameAutocomplete = new AutocompleteComponent(
             page,
@@ -184,6 +190,22 @@ export class LeaveListPage extends BasePage {
         await this.LeaveCheckbox.first().scrollIntoViewIfNeeded();
 
         await this.LeaveCheckbox.first().click({ force: true });
+    }
+
+    async selectEmployee(employeeName: string): Promise<void> {
+        await this.employeeNameAutocomplete.selectExact(employeeName, employeeName, {
+            useKeystrokes: true
+        });
+    }
+
+    async openFirstActionMenu(): Promise<void> {
+        await this.actionMenuButtons.first().waitFor({ state: 'visible', timeout: 10000 });
+        await this.actionMenuButtons.first().click();
+    }
+
+    async approveFirstPendingLeave(): Promise<void> {
+        await this.openFirstActionMenu();
+        await this.page.getByRole('button', { name: 'Approve' }).click();
     }
 
     async approveLeave(): Promise<void> {

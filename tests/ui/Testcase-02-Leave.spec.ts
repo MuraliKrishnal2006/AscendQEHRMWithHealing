@@ -14,7 +14,7 @@ type LeaveRow = {
 
 test.describe('Multiple Leaves - Single Login', () => {
 
-  test('Login once and add multiple leaves', async ({
+  test('employee submits leave, admin approves it, and employee verifies the report', async ({
     page,
     loginPage,
     leavePage,
@@ -36,46 +36,25 @@ test.describe('Multiple Leaves - Single Login', () => {
 
     await expect(dashboardPage.DashBoardheader).toBeVisible();
 
-    // Apply all leaves from CSV
-    for (const leave of leaves) {
+    await test.step('Employee submits leave requests and verifies validation', async () => {
+      for (const leave of leaves) {
+        await leavePage.clickLeave();
+        await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible();
+        await leavePage.clickApply();
+        await expect(page.getByRole('heading', { name: 'Apply Leave', exact: true })).toBeVisible();
+        await leavePage.selectLeaveType(leave['Leave Type']);
+        await expect(leavePage.leaveBalance).toBeVisible();
+        await leavePage.AddLeaveDetails(leave['FromDate'], leave['ToDate'], leave['Comments']);
 
-      // Navigate to Leave
-      await leavePage.clickLeave();
-      await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible();
-      await leavePage.clickApply();
-      await expect(page.getByRole('heading', { name: 'Apply Leave', exact: true })).toBeVisible();
-      // Select Leave Type
-      // Select Leave Type
-      await leavePage.selectLeaveType(leave['Leave Type']);
-
-      // Assertion: Leave Balance should be displayed
-      await expect(page.getByText('Leave Balance', {
-        exact: true
-      })).toBeVisible();
-
-      // Enter From Date, To Date, Comments and Apply
-      await leavePage.AddLeaveDetails(
-        leave['FromDate'],
-        leave['ToDate'],
-        leave['Comments']
-      );
-
-      if (leave.Expected === 'Successfully Saved') {
-
-        await expect(leavePage.successMessage).toBeVisible();
-        await expect(leavePage.successMessage).toHaveText(leave.Expected);
-
-      } else if (leave.Expected === 'To date should be after from date') {
-
-        await expect(leavePage.dateValidationMessage).toBeVisible();
-        await expect(leavePage.dateValidationMessage).toHaveText(leave.Expected);
-
-      } else if (leave.Expected === 'Failed to Submit: No Working Days Selected') {
-
-        await expect(leavePage.errorMessage).toBeVisible();
-        await expect(leavePage.errorMessage).toHaveText(leave.Expected);
+        if (leave.Expected === 'Successfully Saved') {
+          await expect(leavePage.successMessage).toHaveText(leave.Expected);
+        } else if (leave.Expected === 'To date should be after from date') {
+          await expect(leavePage.dateValidationMessage).toHaveText(leave.Expected);
+        } else {
+          await expect(leavePage.errorMessage).toHaveText(leave.Expected);
+        }
       }
-    }
+    });
 
     // Logout after all leaves are applied
     await dashboardPage.logout();
@@ -94,6 +73,7 @@ test.describe('Multiple Leaves - Single Login', () => {
 
     await expect(dashboardPage.DashBoardheader).toBeVisible();
 
+    await test.step('Admin searches and approves the submitted request', async () => {
     // Open Leave List/Search page after Admin login
     await leavePage.clickLeave();
     // Verify Leave page is displayed
@@ -126,24 +106,28 @@ test.describe('Multiple Leaves - Single Login', () => {
   await expect(leaveListPage.LeaveCheckbox.first())
     .toBeVisible();
 
-  await leaveListPage.selectLeave();
-
-  await leaveListPage.approveLeave();
+  await leaveListPage.approveFirstPendingLeave();
 
   // Allow approval/update to complete before next search
   await page.waitForTimeout(2000);
 }
+
+      await expect(leaveListPage.leaveTable).toBeVisible();
+      await expect(leaveListPage.leaveRows.first()).toBeVisible();
 
       // Verify successful approval
       //await expect(leaveListPage.successMessage).toBeVisible();
 
       //await expect(leaveListPage.successMessage).toHaveText('Successfully Updated');
     
+    });
+
     // Logout after search
     await dashboardPage.logout();
 
     await loginPage.verifyUsernameVisible();
 
+    await test.step('Employee verifies the approved leave report', async () => {
     // Login again as specific user
 
     await loginPage.gotoLogin();
@@ -174,6 +158,8 @@ test.describe('Multiple Leaves - Single Login', () => {
     await expect(page.getByRole('heading', {
       name: 'My Leave Entitlements and Usage Report'
     })).toBeVisible();
+    await expect(page.locator('.oxd-table')).toBeVisible();
+    });
 
   });
 });

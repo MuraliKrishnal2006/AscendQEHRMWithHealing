@@ -19,6 +19,7 @@ export class LeavePage extends BasePage {
     readonly successMessage: Locator;
     readonly errorMessage: Locator;
     readonly dateValidationMessage: Locator;
+    readonly leaveBalance: Locator;
     readonly leaveTypeDropdown: SelectDropdownComponent;
     readonly topNav: TopNavComponent;
 
@@ -36,6 +37,7 @@ export class LeavePage extends BasePage {
         this.errorMessage = page.getByText('Failed to Submit: No Working Days Selected', { exact: true });
 
         this.dateValidationMessage = page.getByText('To date should be after from date', { exact: true });
+        this.leaveBalance = page.locator('.orangehrm-leave-balance-text').describe('Available leave balance for the selected leave type');
         // LeaveType's original selector was unscoped (page.getByText), so
         // no optionsContainer is passed here — matches original behaviour.
         this.leaveTypeDropdown = new SelectDropdownComponent(page, this.LeaveType, page.locator('.oxd-select-dropdown'));
